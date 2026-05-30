@@ -1,13 +1,38 @@
 import { useState } from "react";
-
+import UploadSection from "../components/UploadSection";
 import { MdKeyboardVoice } from "react-icons/md";
-import { FiUploadCloud } from "react-icons/fi";
 import { LuLink } from "react-icons/lu";
-
+import { FiUploadCloud } from "react-icons/fi";
 
 function TabdilGoftar() {
     const [activeTab, setActiveTab] = useState("record");
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isTranscribed, setIsTranscribed] = useState(false);
+    const [transcript, setTranscript] = useState("");
+    const [audioUrl, setAudioUrl] = useState("");
+    const [textTab, setTextTab] = useState("simple");
 
+
+const handleRestart = () => {
+  setSelectedFile(null);
+  setAudioUrl("");
+  setTranscript("");
+  setIsTranscribed(false);
+  setTextTab("simple");
+};
+
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+
+  if (file) {
+    setSelectedFile(file);
+
+    const url = URL.createObjectURL(file);
+
+    setAudioUrl(url);
+  }
+};
     
   return (
     <div className="text-center mt-6">
@@ -103,24 +128,16 @@ function TabdilGoftar() {
       </div>
     )}
 
-    {activeTab === "upload" && (
-      <div className="text-center">
-
-          <div className="w-24 h-24 rounded-full bg-[#118AD3] flex items-center justify-center mx-auto">
-
-            <FiUploadCloud className="text-5xl text-white" />
-
-          </div>
-
-        <p className="mt-6 text-gray-500 leading-8 text-[15px]">
-          برای بارگذاری فایل گفتاری (صوتی/تصویری)،
-          <br/> دکمه را فشار دهید
-          متن پیاده شده آن، در اینجا ظاهر می شود   
-        </p>
-
-      </div>
-    )}
-
+{activeTab === "upload" && (
+  <UploadSection
+    selectedFile={selectedFile}
+    audioUrl={audioUrl}
+    textTab={textTab}
+    setTextTab={setTextTab}
+    handleFileChange={handleFileChange}
+    handleRestart={handleRestart}
+  />
+)}
     {activeTab === "link" && (
      <div className="text-center w-full px-10">
 

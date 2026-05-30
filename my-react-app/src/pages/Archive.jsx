@@ -2,7 +2,7 @@ function Archive() {
   return (
     <div className="mt-10">
 
-      <h1 className="text-[30px] text-[#00BA9F] font-bold text-center">
+      <h1 className="text-[18px] text-[#00BA9F] font-bold text-right p-9">
         آرشیو من
       </h1>
 
