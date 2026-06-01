@@ -10,25 +10,22 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="flex flex-row-reverse h-screen overflow-hidden bg-[#F8F8F8]">
+ <div className="flex flex-row-reverse h-screen bg-[#F8F8F8]">
 
-      <Sidebar />
+  <Sidebar />
 
-      <main className="flex-1 px-8 py-4 overflow-hidden">
+  <main className="flex-1 px-8 py-4 overflow-y-auto">
 
-        <TopBar />
+    <TopBar />
 
-        <Routes>
+    <Routes>
+      <Route path="/" element={<TabdilGoftar />} />
+      <Route path="/archive" element={<Archive />} />
+    </Routes>
 
-          <Route path="/" element={<TabdilGoftar />} />
+  </main>
 
-          <Route path="/archive" element={<Archive />} />
-
-        </Routes>
-
-      </main>
-
-    </div>
+</div>
   );
 }
 

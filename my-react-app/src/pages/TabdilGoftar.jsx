@@ -1,24 +1,82 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { getRequestList } from "../api/transcribe";
 import UploadSection from "../components/UploadSection";
 import { MdKeyboardVoice } from "react-icons/md";
 import { LuLink } from "react-icons/lu";
 import { FiUploadCloud } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setRequests,
+  setSelectedRequest,
+} from "../store/requestSlice";
+
 
 function TabdilGoftar() {
     const [activeTab, setActiveTab] = useState("record");
     const [selectedFile, setSelectedFile] = useState(null);
-    const [isTranscribed, setIsTranscribed] = useState(false);
-    const [transcript, setTranscript] = useState("");
-    const [audioUrl, setAudioUrl] = useState("");
     const [textTab, setTextTab] = useState("simple");
+    const [loading, setLoading] = useState(false);
 
+
+    const dispatch = useDispatch();
+
+    const requests = useSelector(
+      (state) => state.requests.requests
+    );
+
+    const requestData = useSelector(
+      (state) => state.requests.selectedRequest
+    );
+
+
+ useEffect(() => {
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getRequestList();
+
+
+    dispatch(setRequests(data));
+
+    if (data.length > 0) {
+      dispatch(setSelectedRequest(data[0]));
+    }
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+
+
+  };
+
+
+
+  fetchRequests();
+}, []);
+
+const loadLatestRequest = async () => {
+  try {
+    setLoading(true);
+
+    const requests = await getRequestList();
+
+    if (requests?.length > 0) {
+      dispatch(setSelectedRequest(requests[0]));
+    }
+    setLoading(false);
+  } catch (error) {
+    console.error(error);
+    setLoading(false);
+  }
+};
 
 const handleRestart = () => {
-  setSelectedFile(null);
-  setAudioUrl("");
-  setTranscript("");
-  setIsTranscribed(false);
   setTextTab("simple");
+  loadLatestRequest();
 };
 
 
@@ -33,6 +91,7 @@ const handleFileChange = (event) => {
     setAudioUrl(url);
   }
 };
+
     
   return (
     <div className="text-center mt-6">
@@ -108,7 +167,7 @@ const handleFileChange = (event) => {
 
   {/* Content Area */}
 
-  <div className="w-full h-[340px] flex flex-col items-center justify-center">
+  <div className="w-full min-h-[300px] flex flex-col items-center p-6">
 
     {activeTab === "record" && (
       <div className="text-center">
@@ -129,14 +188,14 @@ const handleFileChange = (event) => {
     )}
 
 {activeTab === "upload" && (
-  <UploadSection
-    selectedFile={selectedFile}
-    audioUrl={audioUrl}
-    textTab={textTab}
-    setTextTab={setTextTab}
-    handleFileChange={handleFileChange}
-    handleRestart={handleRestart}
-  />
+<UploadSection
+  textTab={textTab}
+  setTextTab={setTextTab}
+  handleRestart={handleRestart}
+  requestData={requestData}
+  requests={requests}
+  loading={loading}
+/>
 )}
     {activeTab === "link" && (
      <div className="text-center w-full px-10">
