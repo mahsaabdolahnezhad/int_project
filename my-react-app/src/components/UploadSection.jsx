@@ -42,10 +42,6 @@ const timeToSeconds = (timeString) => {
       .map((s) => s.text)
       .join(" ") || "";
 
-  const audioUrl = requestData?.media_url?.replace(
-  "http://",
-  "https://"
-);
 
 console.log("UPLOAD DATA", requestData);
 
